@@ -1,4 +1,6 @@
-import os, json, joblib
+import os
+import json
+import joblib
 import pandas as pd
 import streamlit as st
 from openai import OpenAI
@@ -26,9 +28,12 @@ def cargar_base():
 modelo, metadata = cargar_modelo()
 df = cargar_base()
 
-mapa = {int(k): v for k, v in metadata['mapa_riesgo'].items()}
+# CAMBIO 1: Acceder a mapa_riesgo dentro de 'kmeans' de forma segura
+mapa_riesgo_dict = metadata.get('kmeans', {}).get('mapa_riesgo', {})
+mapa = {int(k): v for k, v in mapa_riesgo_dict.items()}
 
-st.caption(metadata['nombre_modelo'])
+# CAMBIO 2: Usar la clave 'proyecto' que tiene tu JSON
+st.caption(metadata.get('proyecto', 'Riesgo actuarial'))
 
 with st.form('datos'):
 
